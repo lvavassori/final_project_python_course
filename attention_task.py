@@ -18,11 +18,12 @@ from pathlib import Path
 
 patient_info = {'Patient ID': '','Age': '','Tumor Site' : '','Gender': ''}
 dlg = gui.DlgFromDict(patient_info, title='Patient Information')
+experiment_directory = Path(r"/Users/lauravavassori/Desktop/attention_task") #define path for saving results
 
 if not dlg.OK:      #quit if cancel is selected
     core.quit()
 
-with open(patient_info['Patient ID']+'_attention_task_info.txt', 'w') as f:      #write patient_info to a txt file
+with open(str(experiment_directory) + '/' +patient_info['Patient ID']+'_attention_task_info.txt', 'w') as f:      #write patient_info to a txt file
     for key, value in patient_info.items():
         f.write(f'{key}: {value}\n')
     
@@ -60,7 +61,6 @@ small_stimulus_size = (0.18, 0.18)
 max_presentation_time = 4.0
 
 results = []
-experiment_directory = Path(r"/Users/lauravavassori/Desktop/attention_task") #define path for saving results
 
 
 
