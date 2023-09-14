@@ -18,11 +18,20 @@ from pathlib import Path
 
 patient_info = {'Patient ID': '','Age': '','Tumor Site' : '','Gender': ''}
 dlg = gui.DlgFromDict(patient_info, title='Patient Information')
+
+# LP: small recommandation: test that the directory exists before opening the mask, this 
+# spares you yhe trouble of inpytting data and then seeing the script crashing.
+# just:
+# assert experiment_directory.exists()   #(put this before the dlg)
 experiment_directory = Path(r"/Users/lauravavassori/Desktop/attention_task") #define path for saving results
+
 
 if not dlg.OK:      #quit if cancel is selected
     core.quit()
 
+# LP: If you want to have a look at it, .json files are usually the standard format for saving
+# metadata! They can be easily read in a text editor (they're just text files) and they
+# can be directly parsed as dictionaries in python with the json standard library.
 with open(str(experiment_directory) + '/' +patient_info['Patient ID']+'_attention_task_info.txt', 'w') as f:      #write patient_info to a txt file
     for key, value in patient_info.items():
         f.write(f'{key}: {value}\n')
@@ -50,10 +59,13 @@ combos = [[sha, col, siz] for sha in shape    #create all possible combinations 
           for col in color
           for siz in size]
 
+# LP: Together with the rest of the metadata, it could be useful to also save them in a 
+# metadata json file! This way if you change the script you still have track of what 
+# has been running. The more you save the better, always!
 n_blocks = 1 
 n_trials = 30
 n_stimuli = 5
-stimuli_loc = [(-0.6, 0.4), (-0.2, 0.4), (0.2, 0.4), (0.6, 0.4), (0, -0.4)]
+stimuli_loc = [(-0.6, 04), (-0.2, 0.4), (0.2, 0.4), (0.6, 0.4), (0, -0.4)]
 n_test_stimuli = 4
 n_target_stimuli = 1
 big_stimulus_size = (0.30, 0.30)
@@ -87,6 +99,8 @@ for block in range (n_blocks):      #loops through the number of blocks
                 stimulus = visual.Rect(win, fillColor=stimulus_color, pos=stimuli_loc[stimulus_number], size=stimulus_size)    
             stimulus.draw()      
 
+        # LP: Maybe not so important here, but be aware that psychopy has a built-in timer
+        # that is more precise than time.time()! you can look for Clock() in the documentation
         presentation_time = time.time()    #set the time at which the stimuli are presented, just before 'flip'
         win.flip()
         response = event.waitKeys(keyList=['y', 'n'], maxWait=max_presentation_time)        #response collected via keybord
@@ -96,6 +110,9 @@ for block in range (n_blocks):      #loops through the number of blocks
             is_correct = 'y'
         else:
             is_correct = 'n'
+
+        # A more compact way to write this would be:
+        # accuracy = int(response[0] == is_correct)
 
         accuracy = 0
         
